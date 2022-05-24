@@ -1,6 +1,7 @@
 import { resolve } from 'path';
 import * as core from '@actions/core';
 import {
+  ConfigMap,
   LocalProgramArgs,
   LocalWorkspace,
   LocalWorkspaceOptions,
@@ -10,6 +11,7 @@ import { environmentVariables } from './libs/envs';
 import { handlePullRequestMessage } from './libs/pr';
 import * as pulumiCli from './libs/pulumi-cli';
 import { invariant } from './libs/utils';
+import YAML from 'yaml';
 
 const pulumiVersion = '^3';
 
@@ -51,6 +53,11 @@ const main = async () => {
     core.debug(msg);
     core.info(msg);
   };
+
+  if (config.configMap != '') {
+    const configMap: ConfigMap = YAML.parse(config.configMap);
+    await stack.setAllConfig(configMap);
+  }
 
   if (config.refresh) {
     core.startGroup(`Refresh stack on ${config.stackName}`);

@@ -1,5 +1,7 @@
 import * as random from "@pulumi/random";
 
-const pet = new random.RandomPet("hostname");
+let config = new pulumi.Config();
+let name = config.require("name");
+const pet = new random.RandomPet(name);
 
 export const petName = pet.id;
